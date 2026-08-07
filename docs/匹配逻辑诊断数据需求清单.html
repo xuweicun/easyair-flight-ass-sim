@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>匹配逻辑诊断数据需求清单</title>
+<meta name="author" content="">
+<meta name="description" content="用于复现现行航班节点匹配逻辑、定位错误并建立固定回归集的数据与代码交付清单。">
+<meta name="keywords" content="数据需求,航班计划,算法节点,A-CDM,匹配诊断">
+<meta name="generator" content="Kami">
+<style>
+@font-face{font-family:TsangerJinKai02;src:url("file:///Users/Wilson/.local/share/fonts/kami/TsangerJinKai02-W04.ttf") format("truetype");font-weight:400}@font-face{font-family:TsangerJinKai02;src:url("file:///Users/Wilson/.local/share/fonts/kami/TsangerJinKai02-W05.ttf") format("truetype");font-weight:500}
+@page{size:A4;margin:14mm 16mm 17mm;background:#f5f4ed;@top-right{content:string(section-title);font:7.5pt TsangerJinKai02,serif;color:#6b6a64}@bottom-center{content:counter(page) "  ·  匹配逻辑诊断数据需求清单";font:7.5pt TsangerJinKai02,serif;color:#6b6a64}}@page:first{@top-right{content:""}@bottom-center{content:""}}
+*{box-sizing:border-box}html,body{margin:0;background:#f5f4ed;color:#141413}body{font:8.8pt/1.36 TsangerJinKai02,"Source Han Serif SC","Songti SC",serif;letter-spacing:.12pt}strong,h1,h2,h3{font-weight:500}p{margin:0 0 6pt}ul,ol{margin:4pt 0 6pt;padding-left:17pt}li{margin:1.5pt 0}code{font:7.5pt "SF Mono",monospace;background:#faf9f5;padding:1pt 3pt;border-radius:2pt}.cover{min-height:260mm;display:flex;flex-direction:column;justify-content:space-between;padding:35mm 0 8mm;break-after:page}.eyebrow,.chapter-num{color:#1B365D;font-size:8.5pt;letter-spacing:1pt}.cover h1{font-size:34pt;line-height:1.14;margin:16pt 0}.cover .sub{font-size:14pt;line-height:1.5;color:#504e49;max-width:88%}.meta{color:#6b6a64}.toc{break-after:page}.toc h1,h1{font-size:19pt;line-height:1.2;border-left:2.5pt solid #1B365D;padding-left:8pt;margin:0 0 9pt;string-set:section-title content()}.toc-row{display:flex;padding:5pt 0;border-bottom:.4pt dotted #e8e6dc}.toc-row span{width:28pt;color:#1B365D}.toc-row a{color:#141413;text-decoration:none;flex:1}.toc-row a:after{content:target-counter(attr(href),page);float:right;color:#6b6a64}.chapter{break-before:page}h2{font-size:13pt;margin:10pt 0 5pt}h3{font-size:10.5pt;margin:8pt 0 4pt;color:#3d3d3a}.lead{font-size:10pt;color:#3d3d3a}.callout,.takeaway{background:#faf9f5;border-left:2pt solid #1B365D;border-radius:4pt;padding:7pt 10pt;margin:7pt 0;break-inside:avoid}.label{color:#1B365D;font-size:7.5pt;letter-spacing:.6pt;margin-bottom:2pt}.priority{display:inline-block;background:#E4ECF5;color:#1B365D;border-radius:3pt;padding:1pt 4pt;font-size:7.2pt}.priority.strong{background:#eef2f7}.priority.optional{background:#e8e6dc;color:#504e49}.check{font-size:11pt;color:#1B365D;margin-right:3pt}table{width:100%;border-collapse:collapse;margin:6pt 0 8pt;font-size:7.5pt;line-height:1.25;break-inside:auto}thead{display:table-header-group}tr{break-inside:avoid}th{text-align:left;color:#3d3d3a;border-bottom:1pt solid #e8e6dc;padding:2.6pt 3.5pt}td{vertical-align:top;border-bottom:.3pt solid #e5e3d8;padding:2.4pt 3.5pt}tbody tr:nth-child(even) td{background:#faf9f5}.compact{font-size:6.8pt}.compact td,.compact th{padding:1.7pt 2.8pt}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:7pt;margin:7pt 0}.metric{background:#faf9f5;border:.5pt solid #e8e6dc;border-radius:5pt;padding:7pt}.metric b{display:block;font-size:16pt;color:#1B365D}.metric span{font-size:7.5pt;color:#6b6a64}.hl{color:#1B365D;font-weight:500}pre{font:7.3pt/1.3 "SF Mono",monospace;background:#faf9f5;border-radius:4pt;padding:7pt 9pt;white-space:pre-wrap;break-inside:avoid}.small{font-size:7.8pt;color:#504e49}.checklist{list-style:none;padding-left:0}.checklist li{border-bottom:.3pt solid #e5e3d8;padding:3.5pt 0}.no-break{break-inside:avoid}#inputs{font-size:8pt;line-height:1.23}#inputs .lead{font-size:9pt}#inputs h2{font-size:11pt;margin:5pt 0 3pt}#inputs .compact{font-size:6.15pt;line-height:1.12}#inputs .compact td,#inputs .compact th{padding:1.25pt 2.4pt}#handoff{font-size:7.7pt;line-height:1.18}#handoff .lead{font-size:8.5pt}#handoff h2{font-size:10.5pt;margin:5pt 0 2pt}#handoff .checklist{margin:1pt 0 3pt}#handoff .checklist li{padding:1.5pt 0}#handoff .takeaway{padding:5pt 8pt;margin:4pt 0}#handoff table{font-size:6.8pt;margin:3pt 0}#handoff td,#handoff th{padding:1.6pt 3pt}@media screen{body{max-width:210mm;margin:auto;padding:14mm 16mm 17mm}}
+</style>
+</head>
+<body>
+<section class="cover"><div><div class="eyebrow">数据交付 · 复现与诊断</div><h1>匹配逻辑诊断<br>数据需求清单</h1><p class="sub">用于复现公司现行航班节点匹配逻辑、发现错误、修复规则，并将人工正确答案固化为长期回归集。</p></div><div class="meta"><strong>航班节点匹配仿真验证系统</strong><br>版本 1.1 · 2026-07-20<br>适用对象：算法、后端、数据平台、A-CDM 与产品团队</div></section>
+
+<section class="toc"><h1>目录</h1><div class="toc-row"><span>01</span><a href="#quick">一页交付摘要</a></div><div class="toc-row"><span>02</span><a href="#code">源码、配置与运行环境</a></div><div class="toc-row"><span>03</span><a href="#package">数据包结构与通用约定</a></div><div class="toc-row"><span>04</span><a href="#inputs">原始输入字段字典</a></div><div class="toc-row"><span>05</span><a href="#outputs">现行输出、日志与人工真值</a></div><div class="toc-row"><span>06</span><a href="#samples">样本范围与问题覆盖</a></div><div class="toc-row"><span>07</span><a href="#quality">数据质量、脱敏与验收</a></div><div class="toc-row"><span>08</span><a href="#handoff">交付勾选表</a></div></section>
+
+<section class="chapter" id="quick"><div class="chapter-num">01 · Delivery Brief</div><h1>一页交付摘要</h1>
+  <p class="lead">第一轮最小可用交付是：<span class="hl">现行匹配代码 + 连续 7 至 14 天原始数据 + 同批次系统输出 + 中间匹配证据 + 50 至 100 个人工核验案例</span>。只给错例或只给清洗后的结果，都无法判断问题出在输入、聚类、候选生成、评分还是最终关联。</p>
+  <div class="metrics"><div class="metric"><b>7 至 14 天</b><span>首批连续业务日期</span></div><div class="metric"><b>50 至 100</b><span>人工正确答案案例</span></div><div class="metric"><b>5 至 20</b><span>每类问题的正常对照</span></div></div>
+  <h2>交付优先级</h2><table><thead><tr><th>级别</th><th>必须提供</th><th>缺失影响</th></tr></thead><tbody><tr><td><span class="priority">必须</span></td><td>生产代码、有效配置、航班计划、算法节点、当前匹配结果、人工正确答案</td><td>无法完整复现或判断修复是否正确</td></tr><tr><td><span class="priority strong">强烈建议</span></td><td>A-CDM、运行日志、候选评分、飞机注册号、外观识别、数据库查询</td><td>可定位错误，但解释能力和歧义消除受限</td></tr><tr><td><span class="priority optional">可选</span></td><td>相关截图、视频时间索引、OCR 原图、历史版本结果</td><td>不阻断首轮，但影响证据复核和长期回归</td></tr></tbody></table>
+  <div class="takeaway"><div class="label">最重要的组合</div>同一节点必须能够沿着“原始行 → 当前保障组 → 候选航班 → 当前结论 → 人工正确答案”完整追踪。任何一步缺少稳定关联键，诊断都会退化为人工猜测。</div>
+</section>
+
+<section class="chapter" id="code"><div class="chapter-num">02 · Code & Runtime</div><h1>源码、配置与运行环境</h1>
+  <p class="lead">代码包必须能在隔离环境复现同一批数据的当前结果。不要只截取一个匹配函数，因为实际行为通常还受 SQL、字段清洗、定时任务、缓存和配置覆盖影响。</p>
+  <table><thead><tr><th>项目</th><th>级别</th><th>交付内容</th><th>验收</th></tr></thead><tbody>
+    <tr><td>完整源码</td><td><span class="priority">必须</span></td><td>入口、匹配服务、数据访问、SQL、任务调度、工具类和测试</td><td>可定位实际调用链</td></tr>
+    <tr><td>版本标识</td><td><span class="priority">必须</span></td><td>Git commit、分支、构建时间、生产发布时间</td><td>代码与数据日期一致</td></tr>
+    <tr><td>运行配置</td><td><span class="priority">必须</span></td><td>时间阈值、权重、机位映射、事件映射、开关；密钥可脱敏</td><td>说明默认值和生产覆盖值</td></tr>
+    <tr><td>依赖环境</td><td><span class="priority">必须</span></td><td>requirements、pom、package lock、JDK/Python/数据库版本或容器文件</td><td>可独立安装</td></tr>
+    <tr><td>数据库结构</td><td><span class="priority strong">强烈建议</span></td><td>相关表 DDL、索引、字段注释、视图与实际查询 SQL</td><td>关联键和时间字段可解释</td></tr>
+    <tr><td>运行说明</td><td><span class="priority">必须</span></td><td>导入、执行、导出命令及预期输出位置</td><td>一条最小样本可跑通</td></tr>
+  </tbody></table>
+  <h2>不得包含</h2><p>生产密码、Token、私钥、真实人员身份信息和不必要的网络地址。脱敏不得改变航班号、机位、时间相对关系、飞机注册号相似性或主外键，否则会破坏诊断价值。</p>
+</section>
+
+<section class="chapter" id="package"><div class="chapter-num">03 · Package Contract</div><h1>数据包结构与通用约定</h1>
+  <p class="lead">建议一个压缩包对应一个代码版本和一个连续时间段。文件名、校验值和说明文件共同确定可复现边界。</p>
+  <pre>matching_review_package/
+├── README.md
+├── manifest.json
+├── code/
+├── config/
+├── schema/
+├── input/
+│   ├── flight_plans.xlsx
+│   ├── algorithm_nodes.xlsx
+│   ├── acdm_manual_nodes.xlsx
+│   └── appearance_features.xlsx
+├── current_output/
+│   ├── flight_groups.xlsx
+│   ├── candidates.xlsx
+│   ├── node_assignments.xlsx
+│   └── runtime_logs/
+└── ground_truth/
+    └── reviewed_cases.xlsx</pre>
+  <h2>README 必须说明</h2><ul><li>机场、时区、数据起止日期、业务日切分规则和跨零点规则。</li><li>代码 commit、生产配置版本、数据库快照时间。</li><li>每个文件的行数、主键、编码、时间格式、Sheet 名和生成方式。</li><li>组合机位、远近机位、临时机位和历史改名映射。</li><li>已知缺失、重复、延迟、补录和时间校准问题。</li></ul>
+  <h2>manifest.json</h2><table class="compact"><thead><tr><th>字段</th><th>示例</th><th>用途</th></tr></thead><tbody><tr><td>package_id</td><td>XIY-20260701-14-v1</td><td>唯一交付包编号</td></tr><tr><td>code_commit</td><td>abc1234</td><td>绑定代码版本</td></tr><tr><td>timezone</td><td>Asia/Shanghai</td><td>禁止隐式时区</td></tr><tr><td>business_date_rule</td><td>00:00-23:59</td><td>解释跨零点</td></tr><tr><td>files[].sha256</td><td>64 位摘要</td><td>防止文件被替换</td></tr><tr><td>files[].rows</td><td>69823</td><td>导入前后数量核对</td></tr></tbody></table>
+</section>
+
+<section class="chapter" id="inputs"><div class="chapter-num">04 · Raw Inputs</div><h1>原始输入字段字典</h1>
+  <p class="lead">原始字段必须原样保留，同时可额外提供规范化列。不要先删掉“看起来错误”的年份、重复节点、空航班号或重叠计划，因为这些正是需要诊断的对象。</p>
+  <h2>航班计划 flight_plans</h2><table class="compact"><thead><tr><th>字段</th><th>类型 / 示例</th><th>级别</th><th>关联与用途</th></tr></thead><tbody>
+    <tr><td>source_plan_id</td><td>字符串 / 20993035</td><td><span class="priority">必须</span></td><td>源计划稳定主键</td></tr><tr><td>flight_no</td><td>字符串 / MU2336</td><td><span class="priority">必须</span></td><td>进出港航班号原值</td></tr><tr><td>in_out</td><td>A/D/进港/出港</td><td><span class="priority strong">强烈建议</span></td><td>仅作方向证据，不从保障编码推断</td></tr><tr><td>inbound_flight_no</td><td>MU2336</td><td><span class="priority strong">强烈建议</span></td><td>归一化进港航段</td></tr><tr><td>outbound_flight_no</td><td>MU2145</td><td><span class="priority strong">强烈建议</span></td><td>归一化出港航段</td></tr><tr><td>stand</td><td>515 / 525L</td><td><span class="priority">必须</span></td><td>聚类与候选主维度</td></tr><tr><td>plan_start / plan_end</td><td>日期时间</td><td><span class="priority">必须</span></td><td>计划占位窗，原始值不得修正后覆盖</td></tr><tr><td>estimate_start / end</td><td>日期时间</td><td><span class="priority strong">强烈建议</span></td><td>预计变化分析</td></tr><tr><td>actual_start / end</td><td>日期时间</td><td><span class="priority strong">强烈建议</span></td><td>计划与实际偏差分析</td></tr><tr><td>aircraft_no</td><td>B658E</td><td><span class="priority strong">强烈建议</span></td><td>物理航空器、换机识别</td></tr><tr><td>aircraft_type / airline</td><td>C919 / MU</td><td><span class="priority strong">强烈建议</span></td><td>外观消歧</td></tr><tr><td>origin / destination</td><td>SHA / JGN</td><td><span class="priority optional">可选</span></td><td>经停链和业务解释</td></tr><tr><td>flight_status</td><td>正常/取消/备降/调机</td><td><span class="priority strong">强烈建议</span></td><td>特殊航班识别</td></tr><tr><td>safeguard_code</td><td>内部 ID</td><td><span class="priority strong">强烈建议</span></td><td>仅审计关联，不作为天然方向标签</td></tr><tr><td>raw_payload</td><td>JSON / 原始整行</td><td><span class="priority">必须</span></td><td>保留所有未映射字段</td></tr>
+  </tbody></table>
+  <h2>算法节点 algorithm_nodes</h2><table class="compact"><thead><tr><th>字段</th><th>类型 / 示例</th><th>级别</th><th>关联与用途</th></tr></thead><tbody>
+    <tr><td>node_id</td><td>唯一字符串</td><td><span class="priority">必须</span></td><td>节点守恒和回归主键</td></tr><tr><td>event_type</td><td>AircraftEntry</td><td><span class="priority">必须</span></td><td>边界、阶段和语义评分</td></tr><tr><td>event_time</td><td>带秒日期时间</td><td><span class="priority">必须</span></td><td>排序；说明设备时区</td></tr><tr><td>stand</td><td>579</td><td><span class="priority">必须</span></td><td>聚类分区</td></tr><tr><td>source_type</td><td>algorithm_node</td><td><span class="priority">必须</span></td><td>禁止人工结果伪装成算法</td></tr><tr><td>camera_id</td><td>10.233.18.28</td><td><span class="priority strong">强烈建议</span></td><td>机位映射与时间偏差追踪</td></tr><tr><td>algorithm_task_id</td><td>任务唯一 ID</td><td><span class="priority strong">强烈建议</span></td><td>重复上报和任务重启诊断</td></tr><tr><td>reported_flight_no</td><td>MU2336 / 空</td><td><span class="priority strong">强烈建议</span></td><td>参考冲突分析</td></tr><tr><td>safeguard_code</td><td>内部 ID</td><td><span class="priority strong">强烈建议</span></td><td>现行代码行为复现</td></tr><tr><td>confidence</td><td>0-1</td><td><span class="priority optional">可选</span></td><td>误报和低置信节点分析</td></tr><tr><td>ingest_time</td><td>日期时间</td><td><span class="priority strong">强烈建议</span></td><td>事件时间与上报延迟分离</td></tr><tr><td>raw_message</td><td>原始 JSON</td><td><span class="priority">必须</span></td><td>确认解析是否改变语义</td></tr>
+  </tbody></table>
+  <h2>A-CDM / 人工现场节点</h2><table class="compact"><thead><tr><th>字段</th><th>级别</th><th>说明</th></tr></thead><tbody><tr><td>report_id、source_type</td><td><span class="priority">必须</span></td><td>记录唯一标识；source_type 为 acdm 或 manual_report</td></tr><tr><td>flight_no、stand</td><td><span class="priority">必须</span></td><td>航班号视为高可靠锚点；机位冲突不得静默覆盖</td></tr><tr><td>aircraft_entry_time</td><td><span class="priority">必须</span></td><td>飞机开始占位的绝对时间锚点</td></tr><tr><td>chock_on_time</td><td><span class="priority strong">强烈建议</span></td><td>允许数分钟偏差和轻微错序</td></tr><tr><td>stand_release_time</td><td><span class="priority strong">强烈建议</span></td><td>算法缺结束节点时兜底</td></tr><tr><td>operator_time、revision</td><td><span class="priority strong">强烈建议</span></td><td>区分事件时间、录入时间和修改版本</td></tr><tr><td>aircraft_no</td><td><span class="priority strong">强烈建议</span></td><td>换飞机、跨机位链路确认</td></tr><tr><td>raw_payload</td><td><span class="priority">必须</span></td><td>保留现场系统原始内容</td></tr></tbody></table>
+  <h2>外观与 OCR</h2><p>建议字段：证据 ID、事件时间、摄像机、机位、航司候选、机型候选、飞机注册号 OCR 原串、标准化串、各自置信度、图片或视频帧索引、算法版本。原始图像可选，但 OCR 文本和置信度必须成对提供。</p>
+</section>
+
+<section class="chapter" id="outputs"><div class="chapter-num">05 · Outputs & Ground Truth</div><h1>现行输出、日志与人工真值</h1>
+  <p class="lead">当前系统输出是被诊断对象，不是正确答案。必须同时提供最终结果与形成该结果的中间证据，才能区分“候选没生成”“候选排序错误”和“门槛判断错误”。</p>
+  <h2>保障组 flight_groups</h2><table class="compact"><thead><tr><th>字段</th><th>级别</th><th>用途</th></tr></thead><tbody><tr><td>group_id / temporary_code</td><td><span class="priority">必须</span></td><td>组主键和可读编号</td></tr><tr><td>node_ids</td><td><span class="priority">必须</span></td><td>重建聚类与节点守恒</td></tr><tr><td>observed_start / end</td><td><span class="priority">必须</span></td><td>实际保障范围</td></tr><tr><td>occupancy_start / end + source</td><td><span class="priority strong">强烈建议</span></td><td>占位边界来源解释</td></tr><tr><td>assignment_status</td><td><span class="priority">必须</span></td><td>匹配、待确认、无航班号或异常</td></tr><tr><td>assigned_plan_id / flight_no</td><td><span class="priority">必须</span></td><td>当前系统结论</td></tr><tr><td>strategy_version</td><td><span class="priority">必须</span></td><td>绑定代码与配置</td></tr><tr><td>issue_tags / lineage</td><td><span class="priority strong">强烈建议</span></td><td>异常原因和拆分合并血缘</td></tr></tbody></table>
+  <h2>候选与评分 candidates</h2><p>每个候选至少包含 group_id、plan_id、rank、total_score、机位得分、时间窗得分、节点阶段得分、链路连续得分、顺序得分、外观航司/机型/注册号得分、排除原因、是否选中和领先分差。A-CDM 航班号不提供得分，应独立提供一致、冲突、无计划或多计划等辅助结论。若现行系统没有中间评分，应提供日志或调试开关后的同批输出。</p>
+  <h2>运行日志</h2><ul><li>批次开始和完成时间、任务 ID、代码版本、配置摘要、输入输出行数。</li><li>每个异常或未匹配组的候选生成、规则命中和排除原因。</li><li>数据库、网络、解析、时间转换和重复消费错误；禁止只给 ERROR 汇总数量。</li></ul>
+  <h2>人工真值 reviewed_cases</h2><table class="compact"><thead><tr><th>字段</th><th>级别</th><th>说明</th></tr></thead><tbody><tr><td>case_id</td><td><span class="priority">必须</span></td><td>人工案例唯一 ID</td></tr><tr><td>node_ids / group_id</td><td><span class="priority">必须</span></td><td>答案对应的精确节点集合</td></tr><tr><td>current_result</td><td><span class="priority">必须</span></td><td>现行代码当时结果</td></tr><tr><td>correct_flight_no / plan_id</td><td><span class="priority">必须</span></td><td>最终正确航班；无计划允许只填航班号</td></tr><tr><td>correct_status</td><td><span class="priority">必须</span></td><td>MATCHED、UNASSIGNED、DATA_ERROR 等</td></tr><tr><td>error_type</td><td><span class="priority">必须</span></td><td>分组、匹配、参考、外观或原始节点错误</td></tr><tr><td>evidence</td><td><span class="priority">必须</span></td><td>A-CDM、视频、机号、现场确认等依据</td></tr><tr><td>reviewer / reviewed_at</td><td><span class="priority strong">强烈建议</span></td><td>答案责任与时间</td></tr></tbody></table>
+  <div class="takeaway"><div class="label">真值原则</div>人工答案必须独立于当前系统结果录入。不能把最高候选预填后直接视为“人工确认”，否则回归集只会复制现有错误。</div>
+</section>
+
+<section class="chapter" id="samples"><div class="chapter-num">06 · Sample Coverage</div><h1>样本范围与问题覆盖</h1>
+  <p class="lead">数据必须连续，不能只挑几条错例。连续时间段能保留同机位顺序、跨零点、计划延误和前后航班关系；正常对照用于防止修复一个问题后破坏原有正确结果。</p>
+  <h2>首批规模</h2><ul><li>连续 7 至 14 天，优先覆盖业务量高、延误多和组合机位活跃的日期。</li><li>全部航班计划与全部算法节点，不预先按“是否匹配成功”过滤。</li><li>人工真值 50 至 100 组；每个问题类型至少 5 个，重点类型建议 10 至 20 个。</li><li>每个问题类型附 5 至 20 个已确认正常的对照案例。</li></ul>
+  <h2>问题覆盖矩阵</h2><table class="compact"><thead><tr><th>问题类型</th><th>必须包含</th><th>真值依据</th></tr></thead><tbody><tr><td>同机位计划重叠 / 多候选</td><td>前后计划、完整节点链、当前候选分</td><td>A-CDM 或最终人工航班</td></tr><tr><td>计划缺失、备降、临时航班</td><td>无计划但有现场航班号的组</td><td>A-CDM 航班号</td></tr><tr><td>计划时间偏差超过 30 分钟</td><td>早到、晚到、结束超计划</td><td>飞机入位与推出</td></tr><tr><td>跨零点、异常年份、起止倒置</td><td>原始日期时间和业务日规则</td><td>源系统记录</td></tr><tr><td>组合机位</td><td>父机位与 L/R 同时段数据</td><td>机位占用事实</td></tr><tr><td>同航班号跨机位 / 换飞机</td><td>两架飞机、两个机位、三段航班关系</td><td>飞机注册号 + A-CDM</td></tr><tr><td>同一飞机连续航班</td><td>进港 A、出港 B 及过站节点</td><td>航班计划与现场确认</td></tr><tr><td>节点开始或结束缺失</td><td>只有前半段、后半段或中间节点</td><td>视频 / 人工异常结论</td></tr><tr><td>低信息碎片</td><td>少量极短节点组</td><td>确认 DATA_ERROR</td></tr><tr><td>节点拆分与合并</td><td>原节点集合、拆分点或合并组</td><td>人工分组答案</td></tr><tr><td>A-CDM 轻微错序</td><td>入位、上轮挡和录入时间</td><td>入位作为绝对锚点</td></tr><tr><td>OCR 易混注册号</td><td>B533/B53B/B524 类样本</td><td>真实飞机注册号</td></tr></tbody></table>
+  <h2>禁止的样本方式</h2><ul><li>只提供已经匹配成功的数据。</li><li>只截取问题节点而不提供前后至少 8 小时计划与节点。</li><li>用清洗后的时间覆盖原始时间。</li><li>只给截图，不给机器可读记录和稳定 ID。</li></ul>
+</section>
+
+<section class="chapter" id="quality"><div class="chapter-num">07 · Quality & Acceptance</div><h1>数据质量、脱敏与验收</h1>
+  <p class="lead">收到数据后先验证“能否忠实复现”，再开始改代码。若当前结果无法用交付代码和配置复现，必须先解决版本或数据口径差异。</p>
+  <h2>完整性检查</h2><ul class="checklist"><li><span class="check">□</span>所有文件能读取，列名、Sheet、编码和时间格式与 README 一致。</li><li><span class="check">□</span>主键非空且可唯一定位；重复记录有明确业务含义。</li><li><span class="check">□</span>航班计划、算法节点、A-CDM、匹配结果和人工答案的关联键可闭环。</li><li><span class="check">□</span>输入节点总数等于最终所有组节点数，拆分合并后仍守恒。</li><li><span class="check">□</span>用交付代码、配置和数据可复现当前匹配结果。</li><li><span class="check">□</span>人工真值可形成固定回归断言，且不依赖当前结果预填。</li></ul>
+  <h2>时间质量</h2><table><thead><tr><th>检查</th><th>要求</th></tr></thead><tbody><tr><td>时区</td><td>统一声明 Asia/Shanghai 或逐字段带时区，禁止本地时间与 UTC 混用</td></tr><tr><td>精度</td><td>算法节点保留到秒或毫秒；人工节点保留原录入精度</td></tr><tr><td>多时间字段</td><td>事件发生、系统接收、人工录入不得混为一个字段</td></tr><tr><td>跨零点</td><td>不得仅比较 HH:mm；必须使用完整日期时间</td></tr></tbody></table>
+  <h2>脱敏原则</h2><ul><li>可删除姓名、电话、账号、密码、Token 和生产域名。</li><li>航班号可做一致性映射，但同一航班在所有文件中必须映射为同一值。</li><li>飞机注册号若脱敏，必须保持 OCR 字符相似关系；建议不脱敏或使用稳定替换表。</li><li>时间可整体平移同一固定量，但所有来源必须同步平移，且跨零点关系不变。</li><li>机位号不建议脱敏；如必须脱敏，父子组合关系和相邻顺序必须保留。</li></ul>
+  <h2>文件级验证</h2><p>每个文件记录 SHA-256、行数和生成脚本。压缩前后重新核对哈希；任何重新导出都生成新 package_id，不覆盖旧包。</p>
+</section>
+
+<section class="chapter" id="handoff"><div class="chapter-num">08 · Handoff Checklist</div><h1>交付勾选表</h1>
+  <p class="lead">以下部分可直接转发给研发、数据平台和 A-CDM 团队。交付方逐项勾选并在备注中说明缺失原因。</p>
+  <h2>A. 代码与配置</h2><ul class="checklist"><li><span class="check">□</span>完整源码与 Git commit</li><li><span class="check">□</span>生产实际生效配置及默认配置</li><li><span class="check">□</span>依赖锁文件、运行环境和启动命令</li><li><span class="check">□</span>相关 DDL、SQL、定时任务和缓存说明</li><li><span class="check">□</span>最小可运行样例及预期输出</li></ul>
+  <h2>B. 原始数据</h2><ul class="checklist"><li><span class="check">□</span>连续 7 至 14 天完整航班计划</li><li><span class="check">□</span>同时间段全部算法节点和原始报文</li><li><span class="check">□</span>A-CDM / 人工现场航班号、入位、上轮挡和释放机位时间</li><li><span class="check">□</span>航司、机型和飞机注册号识别结果</li><li><span class="check">□</span>组合机位及历史机位映射</li></ul>
+  <h2>C. 当前结果与答案</h2><ul class="checklist"><li><span class="check">□</span>当前保障组及精确 node_ids</li><li><span class="check">□</span>候选航班、逐项评分和排除原因</li><li><span class="check">□</span>节点最终航班归属和占位边界来源</li><li><span class="check">□</span>运行日志与异常日志</li><li><span class="check">□</span>50 至 100 个人工正确答案及判断依据</li><li><span class="check">□</span>各问题类型正常对照案例</li></ul>
+  <h2>D. 数据说明与安全</h2><ul class="checklist"><li><span class="check">□</span>README、manifest、时区和业务日规则</li><li><span class="check">□</span>每个文件行数、主键和 SHA-256</li><li><span class="check">□</span>脱敏映射说明</li><li><span class="check">□</span>已知缺失、延迟、重复和补录说明</li><li><span class="check">□</span>已删除所有密码、Token、私钥和无关个人信息</li></ul>
+  <div class="takeaway"><div class="label">收到数据后的下一步</div>先在隔离环境复现公司当前结果，生成“输入质量问题、现行逻辑问题、仿真规则差异、人工真值回归”四张清单；随后逐个修复并全量重跑，直到人工错例为 0、历史正确案例无回退、节点数量守恒。</div>
+  <h2>交付备注</h2><table><thead><tr><th>项目</th><th>负责人</th><th>状态</th><th>备注 / 缺失原因</th></tr></thead><tbody><tr><td>代码与配置</td><td></td><td>□</td><td></td></tr><tr><td>航班计划</td><td></td><td>□</td><td></td></tr><tr><td>算法节点</td><td></td><td>□</td><td></td></tr><tr><td>A-CDM / 人工节点</td><td></td><td>□</td><td></td></tr><tr><td>当前输出与日志</td><td></td><td>□</td><td></td></tr><tr><td>人工正确答案</td><td></td><td>□</td><td></td></tr></tbody></table>
+</section>
+</body></html>

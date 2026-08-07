@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>航班节点匹配规则说明书</title>
+<meta name="author" content="">
+<meta name="description" content="记录航班计划归一化、保障节点聚类、航班匹配、A-CDM证据、人工核验和回归验收的完整规则。">
+<meta name="keywords" content="航班匹配,保障节点,A-CDM,节点聚类,回归验证">
+<meta name="generator" content="Kami">
+<style>
+@font-face{font-family:TsangerJinKai02;src:url("file:///Users/Wilson/.local/share/fonts/kami/TsangerJinKai02-W04.ttf") format("truetype");font-weight:400}
+@font-face{font-family:TsangerJinKai02;src:url("file:///Users/Wilson/.local/share/fonts/kami/TsangerJinKai02-W05.ttf") format("truetype");font-weight:500}
+@page{size:A4;margin:18mm 19mm 20mm;background:#f5f4ed;@top-right{content:string(section-title);font:8pt TsangerJinKai02,serif;color:#6b6a64}@bottom-center{content:counter(page) "  ·  航班节点匹配规则说明书";font:8pt TsangerJinKai02,serif;color:#6b6a64}}
+@page:first{@top-right{content:""}@bottom-center{content:""}}
+*{box-sizing:border-box}html,body{margin:0;background:#f5f4ed;color:#141413}body{font:10pt/1.5 TsangerJinKai02,"Source Han Serif SC","Songti SC",serif;letter-spacing:.15pt}strong,h1,h2,h3{font-weight:500}p{margin:0 0 8pt}ul,ol{margin:5pt 0 9pt;padding-left:19pt}li{margin:2pt 0}code{font:8.5pt "SF Mono",monospace;background:#faf9f5;padding:1pt 3pt;border-radius:2pt}.cover{min-height:250mm;display:flex;flex-direction:column;justify-content:space-between;padding:35mm 0 8mm;break-after:page}.eyebrow,.chapter-num{color:#1B365D;font-size:9pt;letter-spacing:1pt}.cover h1{font-size:34pt;line-height:1.14;margin:16pt 0;border:0;padding:0}.cover .sub{font-size:14pt;line-height:1.5;color:#504e49;max-width:88%}.meta{color:#6b6a64}.toc{break-after:page}.toc h1,h1{font-size:21pt;line-height:1.2;border-left:2.5pt solid #1B365D;padding-left:8pt;margin:0 0 12pt;string-set:section-title content()}.toc-row{display:flex;padding:6pt 0;border-bottom:.4pt dotted #e8e6dc}.toc-row span{width:28pt;color:#1B365D}.toc-row a{color:#141413;text-decoration:none;flex:1}.toc-row a:after{content:target-counter(attr(href),page);float:right;color:#6b6a64}.chapter{break-before:page}h2{font-size:15pt;margin:18pt 0 7pt}h3{font-size:12pt;margin:13pt 0 5pt;color:#3d3d3a}.lead{font-size:11.5pt;color:#3d3d3a}.callout,.takeaway{background:#faf9f5;border-left:2pt solid #1B365D;border-radius:4pt;padding:9pt 12pt;margin:10pt 0;break-inside:avoid}.label{color:#1B365D;font-size:8pt;letter-spacing:.6pt;margin-bottom:3pt}.status{display:inline-block;background:#E4ECF5;color:#1B365D;border-radius:3pt;padding:1pt 5pt;font-size:8pt;margin-right:3pt}.status.review{background:#eef2f7}.status.biz{background:#e8e6dc;color:#504e49}table{width:100%;border-collapse:collapse;margin:9pt 0 12pt;font-size:8.6pt;break-inside:auto}thead{display:table-header-group}tr{break-inside:avoid}th{text-align:left;color:#3d3d3a;border-bottom:1pt solid #e8e6dc;padding:4pt 5pt}td{vertical-align:top;border-bottom:.3pt solid #e5e3d8;padding:4pt 5pt}tbody tr:nth-child(even) td{background:#faf9f5}.compact{font-size:7.8pt}.compact td,.compact th{padding:2.5pt 4pt}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8pt;margin:10pt 0}.metric{background:#faf9f5;border:.5pt solid #e8e6dc;border-radius:5pt;padding:9pt}.metric b{display:block;font-size:18pt;color:#1B365D}.metric span{font-size:8pt;color:#6b6a64}.hl{color:#1B365D;font-weight:500}figure{margin:10pt 0 12pt;break-inside:avoid}svg{display:block;width:100%;height:auto}figcaption{text-align:center;color:#6b6a64;font-size:8pt;margin-top:4pt}.legend{display:flex;gap:8pt;flex-wrap:wrap;margin:6pt 0}.divider{border:0;border-top:.5pt solid #e8e6dc;margin:12pt 0}.small{font-size:8.5pt;color:#504e49}.no-break{break-inside:avoid}@media screen{body{max-width:210mm;margin:auto;padding:18mm 19mm 20mm}}
+</style>
+</head>
+<body>
+<section class="cover">
+  <div><div class="eyebrow">技术规则 · 仿真验证基线</div><h1>航班节点匹配<br>规则说明书</h1><p class="sub">从原始航班计划和算法节点，到保障组聚类、正式航班关联、人工核验与历史回归的完整规则。</p></div>
+  <div class="meta"><strong>航班节点匹配仿真验证系统</strong><br>版本 1.1 · 2026-07-20<br>基线：A-CDM辅助证据 v4 · 真实运行 #27</div>
+</section>
+
+<section class="toc"><h1>目录</h1>
+  <div class="toc-row"><span>01</span><a href="#summary">执行摘要与规则状态</a></div>
+  <div class="toc-row"><span>02</span><a href="#model">业务对象与证据层级</a></div>
+  <div class="toc-row"><span>03</span><a href="#normalize">航班计划归一化与质量识别</a></div>
+  <div class="toc-row"><span>04</span><a href="#cluster">节点聚类与保障组边界</a></div>
+  <div class="toc-row"><span>05</span><a href="#dual">航空器与航班双维归属</a></div>
+  <div class="toc-row"><span>06</span><a href="#score">候选生成、评分与顺序消歧</a></div>
+  <div class="toc-row"><span>07</span><a href="#reference">A-CDM 与外观证据</a></div>
+  <div class="toc-row"><span>08</span><a href="#human">人工核验、回归与发布门禁</a></div>
+  <div class="toc-row"><span>09</span><a href="#cases">典型案例与验证结论</a></div>
+  <div class="toc-row"><span>10</span><a href="#contracts">输出、接口与不变量</a></div>
+  <div class="toc-row"><span>11</span><a href="#appendix">附录：参数、状态、标签与节点字典</a></div>
+</section>
+
+<section class="chapter" id="summary"><div class="chapter-num">01 · Executive Summary</div><h1>执行摘要与规则状态</h1>
+  <p class="lead">系统采用<span class="hl">先聚类、后匹配</span>的两阶段方法：先依据机位和飞机占位边界形成可独立保存的临时保障组，再用计划、顺序、节点语义、A-CDM 与外观证据关联正式航班。计划缺失或证据不足时，节点仍以临时组输出，任何处理都不得破坏节点总数守恒。</p>
+  <div class="legend"><span class="status">已实现</span><span class="status review">已验证</span><span class="status biz">业务规则待接入生产代码复核</span></div>
+  <div class="metrics"><div class="metric"><b>66,205</b><span>运行 #27 输入及归组节点</span></div><div class="metric"><b>1,907</b><span>临时保障组</span></div><div class="metric"><b>5 / 5</b><span>A-CDM 闭环样本通过</span></div><div class="metric"><b>0</b><span>历史回退</span></div><div class="metric"><b>1,370</b><span>自动匹配组</span></div><div class="metric"><b>277</b><span>无航班号临时组</span></div></div>
+  <div class="takeaway"><div class="label">规则底线</div>保障编码是系统内部 ID，不是天然的进出港标签，也不能单独证明两条记录属于同一航班。正式结论必须能够回溯到节点、计划、参考证据、策略版本和人工答案。</div>
+  <h2>端到端处理链</h2>
+  <figure><svg viewBox="0 0 760 240" role="img"><title>航班节点匹配端到端处理链</title><defs><marker id="a1" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#1B365D"/></marker></defs>
+    <g font-family="TsangerJinKai02" font-size="15" text-anchor="middle"><rect x="10" y="35" width="135" height="55" rx="6" fill="#faf9f5" stroke="#e8e6dc"/><text x="78" y="60">航班计划</text><text x="78" y="78" font-size="11" fill="#6b6a64">算法 / A-CDM / 外观</text><rect x="205" y="35" width="135" height="55" rx="6" fill="#faf9f5" stroke="#e8e6dc"/><text x="272" y="60">标准化</text><text x="272" y="78" font-size="11" fill="#6b6a64">保留原始行与来源</text><rect x="400" y="35" width="135" height="55" rx="6" fill="#eef2f7" stroke="#1B365D"/><text x="468" y="60">节点聚类</text><text x="468" y="78" font-size="11" fill="#6b6a64">一个航空器保障组</text><rect x="595" y="35" width="135" height="55" rx="6" fill="#eef2f7" stroke="#1B365D"/><text x="662" y="60">航班匹配</text><text x="662" y="78" font-size="11" fill="#6b6a64">候选、评分与解释</text>
+    <rect x="400" y="155" width="135" height="55" rx="6" fill="#faf9f5" stroke="#e8e6dc"/><text x="468" y="180">临时组输出</text><text x="468" y="198" font-size="11" fill="#6b6a64">无航班号 / 数据异常</text><rect x="595" y="155" width="135" height="55" rx="6" fill="#faf9f5" stroke="#e8e6dc"/><text x="662" y="180">人工闭环</text><text x="662" y="198" font-size="11" fill="#6b6a64">审核、回归、发布</text></g>
+    <g stroke="#1B365D" stroke-width="1.5" fill="none" marker-end="url(#a1)"><path d="M145 62H205"/><path d="M340 62H400"/><path d="M535 62H595"/><path d="M662 90V155"/><path d="M595 182H535"/><path d="M468 155V112"/></g></svg><figcaption>图 1：聚类先于匹配，不能因为计划缺失而丢弃节点。</figcaption></figure>
+</section>
+
+<section class="chapter" id="model"><div class="chapter-num">02 · Domain Model</div><h1>业务对象与证据层级</h1>
+  <p class="lead">系统把“飞机在机位上的一次连续保障”与“航班航段”拆成不同对象。前者依附航空器与机位，后者依附进港、过站和出港业务；二者通过可解释证据关联，而不是用保障编码硬拼。</p>
+  <table><thead><tr><th>对象</th><th>定义</th><th>关键标识</th><th>状态</th></tr></thead><tbody>
+    <tr><td>FlightPlan</td><td>归一化后的驻位计划，可同时含进港和出港航班号</td><td>flight_key、机位、时间窗、机号</td><td><span class="status">已实现</span></td></tr>
+    <tr><td>NodeEvent</td><td>算法、人工现场或 A-CDM 上报的原子事件</td><td>source_row_id、事件类型、时间、机位</td><td><span class="status">已实现</span></td></tr>
+    <tr><td>TemporaryFlightGroup</td><td>同一机位上一次航空器连续占位对应的节点集合</td><td><code>TMP-{机场}-{机位}-{日期}-{序号}</code></td><td><span class="status review">已验证</span></td></tr>
+    <tr><td>Candidate</td><td>临时组可能对应的正式驻位计划及逐项得分</td><td>计划 ID、排名、得分、排除原因</td><td><span class="status">已实现</span></td></tr>
+    <tr><td>Review</td><td>人工最终答案及策略运行时快照</td><td>期望航班、期望状态、错误类型</td><td><span class="status review">已验证</span></td></tr>
+  </tbody></table>
+  <h2>证据优先级</h2>
+  <figure><svg viewBox="0 0 760 260" role="img"><title>证据优先级</title><g font-family="TsangerJinKai02" text-anchor="middle"><path d="M90 220 L210 35 H550 L670 220 Z" fill="#faf9f5" stroke="#e8e6dc"/><line x1="150" y1="170" x2="610" y2="170" stroke="#e8e6dc"/><line x1="185" y1="115" x2="575" y2="115" stroke="#e8e6dc"/><line x1="220" y1="65" x2="540" y2="65" stroke="#e8e6dc"/><text x="380" y="55" font-size="16" fill="#1B365D">人工最终审核答案</text><text x="380" y="100" font-size="15">A-CDM 航班号 + 飞机入位</text><text x="380" y="150" font-size="15">算法飞机边界 + 同机位顺序</text><text x="380" y="202" font-size="15">计划时间、节点语义、外观与 OCR</text><text x="380" y="240" font-size="11" fill="#6b6a64">低置信外观和内部保障编码不能单独决定归属</text></g></svg><figcaption>图 2：高层证据可校正低层证据；冲突必须进入复核而非静默覆盖。</figcaption></figure>
+  <h2>来源必须可追踪</h2><ul><li>所有节点保留 <code>source_type</code>、原始内容、来源文件、行号、批次和导入时间。</li><li>人工输入不得伪装为算法结果；A-CDM 仿真与未来真实接口走同一特征路径。</li><li>原始批次和已发布策略不可修改；归一化升级新建批次并复制证据与人工结论。</li></ul>
+</section>
+
+<section class="chapter" id="normalize"><div class="chapter-num">03 · Plan Normalization</div><h1>航班计划归一化与质量识别</h1>
+  <p class="lead">航班计划不是绝对真值。系统先保留原始行，再将进港和出港记录归一成航空器驻位计划，并把可疑时间、机位和重复关系作为问题标签，而不是直接删除。</p>
+  <h2>归一化规则</h2>
+  <ol><li>字段名支持中英文别名；实际起止时间优先于计划起止时间。</li><li>源记录先按“内部保障编码 + 机位”汇总，缺编码时使用源行号生成临时键。</li><li>进出港属性存在时分别填入进港、出港航班号；属性缺失时仅按出现顺序兜底，不能把内部编码解释为进出港。</li><li>同一飞机注册号、同一机位、完全相同时间窗下，若两组记录方向互补为 A 与 D，则合并为一个物理驻位计划。</li><li>保障编码保留作审计字段，不作为独立匹配证据。</li></ol>
+  <h2>问题计划识别</h2>
+  <table class="compact"><thead><tr><th>标签</th><th>触发条件</th><th>处理</th><th>状态</th></tr></thead><tbody>
+    <tr><td>OVERLAP</td><td>同机位相邻计划时间窗相交</td><td>保留双方，增加歧义证据</td><td><span class="status review">已验证</span></td></tr>
+    <tr><td>MISSING_PLAN_TIME</td><td>计划开始或结束缺失</td><td>不得参与正常评分</td><td><span class="status">已实现</span></td></tr>
+    <tr><td>INVALID_TIME_ORDER</td><td>结束早于开始</td><td>标记不可用时间窗</td><td><span class="status">已实现</span></td></tr>
+    <tr><td>LONG_WINDOW</td><td>计划时长超过 12 小时</td><td>问题库展示；超过 24 小时硬拒绝</td><td><span class="status review">已验证</span></td></tr>
+    <tr><td>INVALID_YEAR</td><td>开始早于 2020 或结束晚于 2035</td><td>必审问题</td><td><span class="status review">已验证</span></td></tr>
+    <tr><td>MISSING_STAND</td><td>机位缺失</td><td>不能按正常同机位路径匹配</td><td><span class="status">已实现</span></td></tr>
+    <tr><td>OCCUPANCY_FLIGHT_CONFLICT</td><td>同机号、机位、起止时间存在多条驻位计划</td><td>保留冲突，不拆成伪独立候选</td><td><span class="status review">已验证</span></td></tr>
+    <tr><td>COMBINATION_STAND_CONFLICT</td><td>525 与 525L/525R 等父子机位计划重叠</td><td>父机位与左右机位互斥；L/R 可同时保障</td><td><span class="status review">已验证</span></td></tr>
+  </tbody></table>
+  <div class="callout"><div class="label">组合机位</div><code>525L</code> 与 <code>525R</code> 是左右子机位，可同时停靠两架小飞机；合并保障一架大飞机时使用 <code>525</code>。父机位与任一子机位同一时段占用视为冲突。</div>
+</section>
+
+<section class="chapter" id="cluster"><div class="chapter-num">04 · Node Clustering</div><h1>节点聚类与保障组边界</h1>
+  <p class="lead">聚类只回答“这些节点是否属于同一次航空器占位”，不提前假设航班号。所有有效节点先按机位、事件时间、节点 ID 稳定排序，再应用强边界和弱边界。</p>
+  <h2>强边界和弱边界</h2>
+  <table><thead><tr><th>边界</th><th>事件</th><th>行为</th></tr></thead><tbody>
+    <tr><td>开始强边界</td><td>飞机入位</td><td>没有有效接近链时拆出新组；不能挂到前一航空器。</td></tr>
+    <tr><td>接近链</td><td>飞机开始入位、引导车开始</td><td>距飞机入位不超过 30 分钟时与入位留在同一新组。</td></tr>
+    <tr><td>结束强边界</td><td>飞机推出、牵引车结束</td><td>属于当前航班；之后出现的非结束节点开启下一组。</td></tr>
+    <tr><td>空闲弱边界</td><td>相邻节点间隔超过 180 分钟</td><td>即使没有飞机边界也拆组，进入人工复核。</td></tr>
+  </tbody></table>
+  <h2>边界次序规则</h2><ul><li>飞机推出与牵引车结束无论谁先上报，都留在前一个保障组。</li><li>下一航班的牵引车开始、飞机开始入位、飞机入位形成新组开始链。</li><li>飞机入位前出现旧作业尾节点时，旧节点单独保留，不能跨过入位边界混入新组。</li><li>结束边界不能因为更靠近下一航班计划开始时间而分给下一航班。</li></ul>
+  <h2>数据异常</h2><table><thead><tr><th>类型</th><th>判定</th><th>结果</th></tr></thead><tbody><tr><td>原始异常节点</td><td>时间或机位缺失，或导入时标记异常</td><td>进入 <code>ERR-*</code> 数据异常组</td></tr><tr><td>孤立开始标记</td><td>单个飞机/引导开始节点，未形成入位链</td><td>DATA_ERROR，标签 ORPHAN_START_MARKER</td></tr><tr><td>低信息碎片</td><td>不超过 3 节点、时长不超过 120 秒、无飞机占位边界</td><td>DATA_ERROR，保留原始节点审计</td></tr></tbody></table>
+  <div class="takeaway"><div class="label">节点守恒</div>拆分、合并、数据异常和无航班号都只能改变归属状态，不能删除原始节点。每次运行必须满足“输入节点数 = 所有最终组节点数”。</div>
+</section>
+
+<section class="chapter" id="dual"><div class="chapter-num">05 · Dual Attribution</div><h1>航空器与航班双维归属</h1>
+  <p class="lead">一次保障组可以跨越两个航班：飞机入位到下客属于进港航班，过站准备和离港阶段属于后续出港航班。同一航班也可能因西安换飞机、换机位而由两个保障组共同构成。</p>
+  <h2>节点阶段</h2>
+  <table><thead><tr><th>阶段</th><th>典型节点</th><th>默认航班归属</th></tr></thead><tbody>
+    <tr><td>ARRIVAL</td><td>开始入位、引导、飞机入位、放轮挡、靠桥、开门、首件行李</td><td>进港航班 A</td></tr>
+    <tr><td>TURNAROUND</td><td>加油、配餐、行李装卸等双向保障作业</td><td>当前实现默认出港航班 B；具体业务可在生产代码复核</td></tr>
+    <tr><td>DEPARTURE</td><td>关门、撤桥、撤轮挡、牵引、推出、开始滑行</td><td>出港航班 B</td></tr>
+  </tbody></table>
+  <div class="callout"><div class="label">货舱门规则</div>开货舱门属于进港卸载准备，关货舱门属于出港装载完成。重复开关门或行李装卸节点必须保留时间顺序，不应仅按节点名称“一刀切”。</div>
+  <h2>两种查看方式</h2><table><thead><tr><th>视角</th><th>组织方式</th><th>回答的问题</th></tr></thead><tbody><tr><td>航空器 / 保障组</td><td>同一架飞机的一组连续节点，标出前半段航班 A、后半段航班 B</td><td>这架飞机在机位上经历了什么？</td></tr><tr><td>航班</td><td>聚合同航班号在不同机位、不同飞机上的关联片段</td><td>该航班在中转换飞机后由哪些保障组共同完成？</td></tr></tbody></table>
+  <h2>占位时间</h2><ul><li>开始优先级：A-CDM 飞机入位 ＞ 算法飞机入位 ＞ 保障组首节点。</li><li>结束优先级：算法飞机推出/牵引车结束 ＞ A-CDM 人工释放机位 ＞ 保障组末节点。</li><li>实际结束晚于计划结束超过 20 分钟时标记 PLAN_END_OVERRUN，并进入问题库。</li></ul>
+  <span class="status biz">业务规则待接入生产代码复核</span> 同航班号跨机位换飞机的完整链路必须结合飞机注册号和人工答案验证，不能只凭航班号合并航空器保障组。
+</section>
+
+<section class="chapter" id="score"><div class="chapter-num">06 · Matching</div><h1>候选生成、评分与顺序消歧</h1>
+  <p class="lead">时间不是五分钟内才可信的硬门槛，而是连续衰减证据。系统同时看机位、时间、节点阶段、链路连续性、同机位计划顺序和参考特征，并公开每项得分。</p>
+  <h2>候选生成</h2><ul><li>默认只取同机位计划，候选计划与保障组相距不超过 8 小时。</li><li>计划时间缺失不能进入正常评分；计划时长小于 0 或超过 24 小时硬拒绝。</li><li>A-CDM 航班号找不到同机位计划时，允许查找跨机位同航班计划；若同机位已存在匹配，则排除跨机位同号计划。</li></ul>
+  <h2>评分项与基线权重</h2>
+  <table class="compact"><thead><tr><th>评分项</th><th>权重</th><th>计算原则</th></tr></thead><tbody>
+    <tr><td>机位一致 <code>stand</code></td><td>30</td><td>完全一致加分；普通路径不同机位为 0。</td></tr><tr><td>可信时间窗 <code>time_window</code></td><td>25</td><td>开始、结束分别按 180 分钟连续衰减后取平均，无五分钟硬判断。</td></tr><tr><td>节点阶段 <code>node_semantics</code></td><td>20</td><td>依据开始/结束节点占比选择与计划开始、结束或中心的距离。</td></tr><tr><td>链路连续 <code>continuity</code></td><td>15</td><td>节点落入计划窗的覆盖率。</td></tr><tr><td>A-CDM 航班号</td><td>不计分</td><td>作为独立辅助项显示一致、冲突、无计划或多计划结论，不改变候选总分与领先分差。</td></tr><tr><td>同机位顺序 <code>sequence_order</code></td><td>40</td><td>仅当前一组已有可靠锚点、计划序号对应且时间窗真实重叠时加分。</td></tr><tr><td>航司外观 <code>appearance_airline</code></td><td>±8</td><td>置信度达到 0.75 后，同航司加分、矛盾扣分。</td></tr><tr><td>机型外观 <code>appearance_type</code></td><td>±5</td><td>与航司规则相同，不单独强绑。</td></tr><tr><td>注册号 OCR <code>appearance_registration</code></td><td>最高 12</td><td>相似度超过 0.5 后按 OCR 置信度连续加分。</td></tr>
+  </tbody></table>
+  <h2>自动匹配门槛</h2><p>最高候选得分至少 <strong>70</strong>、领先第二候选至少 <strong>15</strong>，且不存在参考冲突、实际结束超计划、A-CDM 时间异常或 A-CDM 多计划歧义，才进入 MATCHED。否则保留候选并进入 NEEDS_REVIEW。</p>
+  <div class="takeaway"><div class="label">顺序证据边界</div>同机位计划顺序与实际保障顺序高度可靠，但两者必须有时间重叠。只有排序相邻、时间完全不相交时，顺序证据不能把它们强行绑定。</div>
+</section>
+
+<section class="chapter" id="reference"><div class="chapter-num">07 · Reference Evidence</div><h1>A-CDM 与外观证据</h1>
+  <p class="lead">人工现场 A-CDM 航班号是独立辅助证据，不进入候选评分。它可用于唯一确认、计划缺失补齐和冲突复核，但不改变算法基础分与领先分差。人工时间允许数分钟偏差；飞机入位是绝对占位开始，上轮挡等中间节点轻微错序只标记异常。</p>
+  <h2>A-CDM 决策</h2><table><thead><tr><th>情况</th><th>系统行为</th><th>状态</th></tr></thead><tbody><tr><td>航班号唯一命中同机位计划</td><td>选中该计划，置信度 100%</td><td>MATCHED_REFERENCE</td></tr><tr><td>计划中没有该航班号</td><td>保留 A-CDM 航班号，不伪造计划 ID</td><td>MATCHED_REFERENCE_NO_PLAN</td></tr><tr><td>同号命中多计划</td><td>标记 ACDM_FLIGHT_AMBIGUOUS，进入人工复核</td><td>NEEDS_REVIEW</td></tr><tr><td>时间超出保障组 ±10 分钟</td><td>标记 ACDM_TIME_OUTLIER；可靠航班号仍可确认</td><td>保留解释</td></tr><tr><td>上轮挡早于入位</td><td>标记 ACDM_NODE_ORDER_ANOMALY；占位开始仍取入位</td><td>非阻断</td></tr></tbody></table>
+  <h2>外观与注册号</h2><ul><li>人工模拟和未来真实算法都调用同一特征接口，不允许另建一套评分路径。</li><li>航司、机型在置信度低于 0.75 时不参与强消歧。</li><li>注册号先去除连字符和非字母数字字符，再用 OCR 感知的 Damerau-Levenshtein 相似度。</li><li>易混字符组：0/O/Q、1/I/L、2/Z、5/S、6/G、8/B；易混替换成本 0.35，相邻交换成本 0.5。</li><li><code>B533</code> 与 <code>B53B</code> 的相似度必须高于与 <code>B524</code> 的相似度。</li></ul>
+  <span class="status biz">业务规则待接入生产代码复核</span> 未来 OCR 输出需要同时提供原图时间、摄像机、候选字符串和置信度，便于判断识别误差而非匹配逻辑错误。
+</section>
+
+<section class="chapter" id="human"><div class="chapter-num">08 · Human Loop</div><h1>人工核验、回归与发布门禁</h1>
+  <p class="lead">闭环不是人工直接覆盖系统结果，而是保存“策略原结论、A-CDM 锚点、最终人工答案”三份数据。任何指出的错误都必须进入后续全量回归。</p>
+  <h2>人工动作</h2><table><thead><tr><th>动作</th><th>结果</th><th>审计要求</th></tr></thead><tbody><tr><td>匹配正确</td><td>保存当前明确匹配为期望答案</td><td>策略尚无明确航班时禁止提交</td></tr><tr><td>纠正航班</td><td>MATCHED_MANUAL 或无计划参考航班</td><td>保存原策略航班与最终航班</td></tr><tr><td>保留无航班号</td><td>UNASSIGNED</td><td>候选仅进审计附件，不对外发送</td></tr><tr><td>标记数据异常</td><td>DATA_ERROR</td><td>原始节点仍保留并计入守恒</td></tr><tr><td>拆分 / 合并</td><td>原组 SUPERSEDED，新组保留血缘</td><td>节点集合必须精确守恒</td></tr></tbody></table>
+  <h2>错误分类</h2><p>分组错误、航班匹配错误、参考数据错误、外观特征错误、原始节点异常。建议只能生成策略草稿，不允许自动发布。</p>
+  <h2>闭环状态机</h2>
+  <figure><svg viewBox="0 0 760 250" role="img"><title>人工闭环状态机</title><defs><marker id="a2" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0 0L8 3L0 6Z" fill="#1B365D"/></marker></defs><g font-family="TsangerJinKai02" font-size="14" text-anchor="middle"><g fill="#faf9f5" stroke="#e8e6dc"><rect x="15" y="85" width="125" height="48" rx="6"/><rect x="170" y="85" width="125" height="48" rx="6"/><rect x="325" y="85" width="125" height="48" rx="6"/><rect x="480" y="85" width="125" height="48" rx="6"/></g><rect x="635" y="85" width="110" height="48" rx="6" fill="#eef2f7" stroke="#1B365D"/><text x="77" y="114">选择歧义样本</text><text x="232" y="114">录入 A-CDM</text><text x="387" y="114">重跑策略</text><text x="542" y="105">提交最终答案</text><text x="542" y="122" font-size="11">固化回归</text><text x="690" y="114">VALIDATED</text></g><g stroke="#1B365D" fill="none" marker-end="url(#a2)"><path d="M140 109H170"/><path d="M295 109H325"/><path d="M450 109H480"/><path d="M605 109H635"/><path d="M690 133C690 215 387 220 387 139"/></g><text x="535" y="213" font-family="TsangerJinKai02" font-size="11" fill="#6b6a64">出现错误或历史回退时回到策略草稿，重跑全部固定案例</text></svg><figcaption>图 3：人工答案形成固定回归；只有零错误、零回退才结束闭环。</figcaption></figure>
+  <h2>两套验收门禁</h2><ul><li><strong>A-CDM 闭环：</strong>已选歧义样本全部审核，策略错误、A-CDM 冲突、闭环回退均为 0。</li><li><strong>全量发布：</strong>全部必审问题核验、人工指出问题为 0、历史正确案例无回退、节点数量守恒。运行 #27 仍有全量问题池未审核，因此策略保持草稿。</li></ul>
+</section>
+
+<section class="chapter" id="cases"><div class="chapter-num">09 · Casebook</div><h1>典型案例与验证结论</h1>
+  <p class="lead">案例用于证明规则边界，不作为仅针对某个机位的硬编码。任何案例修复都必须在全量真实数据和正常对照集上回归。</p>
+  <table><thead><tr><th>案例</th><th>问题</th><th>形成的规则</th><th>结论</th></tr></thead><tbody>
+    <tr><td>589 / 548</td><td>结束节点靠近下一计划开始，被误分给下一航班</td><td>推出、牵引车结束固定留在前一保障组</td><td><span class="status review">已验证</span></td></tr>
+    <tr><td>514</td><td>同一物理驻位的进出港记录被拆成并列候选</td><td>机号、机位、时间窗相同且方向互补时归一化合并</td><td><span class="status review">已验证</span></td></tr>
+    <tr><td>515</td><td>同航班号出现在不同机位、飞机不同</td><td>同机位计划优先；跨机位同号仅在无同机位计划时恢复</td><td><span class="status review">已验证</span></td></tr>
+    <tr><td>579</td><td>首节点为配餐，A-CDM 中间节点轻微错序</td><td>入位是绝对占位起点；错序非阻断</td><td><span class="status review">已验证</span></td></tr>
+    <tr><td>505</td><td>仅 43 秒内 3 条反光锥节点</td><td>无飞机边界的极短少量节点归 DATA_ERROR</td><td><span class="status review">已验证</span></td></tr>
+    <tr><td>525 / L / R</td><td>左右子机位计划相同或与父机位重叠</td><td>L/R 可并行，父机位与任一子机位互斥</td><td><span class="status review">已验证</span></td></tr>
+    <tr><td>经停换飞机</td><td>同航班号在西安跨机位、跨航空器</td><td>航班视角聚合两个保障组；航空器视角保持分离</td><td><span class="status biz">待生产复核</span></td></tr>
+  </tbody></table>
+  <h2>运行 #27 结果</h2><table class="compact"><thead><tr><th>结果状态</th><th>组数</th><th>解释</th></tr></thead><tbody><tr><td>MATCHED_REFERENCE</td><td>3</td><td>A-CDM 辅助项唯一确认</td></tr><tr><td>MATCHED</td><td>1,370</td><td>自动门槛通过</td></tr><tr><td>UNASSIGNED</td><td>277</td><td>无可信计划，保留临时组</td></tr><tr><td>DATA_ERROR</td><td>121</td><td>孤立边界、低信息或原始异常</td></tr><tr><td>NEEDS_REVIEW</td><td>136</td><td>多候选或阻断问题</td></tr></tbody></table>
+  <p class="small">来源：西安机场 2026-06 真实数据 · 驻位归一化 v2；17,934 条原始计划行、9,128 个归一化计划、66,205 条节点。</p>
+</section>
+
+<section class="chapter" id="contracts"><div class="chapter-num">10 · Contracts</div><h1>输出、接口与不变量</h1>
+  <p class="lead">输出合同必须让下游知道“系统确认了什么”和“系统仍不知道什么”。内部候选评分不能伪装成正式航班信息。</p>
+  <h2>无航班号输出</h2><ul><li><code>flight_no</code>、<code>safeguard_code</code> 保持空值，状态为 UNASSIGNED。</li><li>提供临时组编号、机场、机位、观测起止、节点列表、来源、聚类置信度和外观推测。</li><li>候选航班及评分只进入审计附件；首版仅 JSON/Excel 预览导出，不连接生产接收方。</li></ul>
+  <h2>公开接口分组</h2><table class="compact"><thead><tr><th>能力</th><th>接口</th></tr></thead><tbody><tr><td>批次与运行</td><td><code>/api/batches</code>、<code>/api/batches/import</code>、<code>/api/runs</code>、<code>/api/dashboard</code></td></tr><tr><td>保障组</td><td><code>/api/groups</code>、<code>/api/groups/{id}</code>、<code>/split</code>、<code>/merge</code></td></tr><tr><td>证据</td><td><code>/api/references/acdm/import</code>、<code>/simulate</code>、<code>/api/features/appearance</code>、<code>/registration-similarity</code></td></tr><tr><td>闭环</td><td><code>/reviews</code>、<code>/acdm-validation</code>、<code>/suggestions</code>、<code>/acceptance</code>、<code>/publish</code></td></tr><tr><td>双维与导出</td><td><code>/associations/groups</code>、<code>/associations/flights</code>、<code>/exports/unassigned.*</code></td></tr></tbody></table>
+  <h2>系统不变量</h2><ol><li>每个节点最终只属于一个有效组、无航班号组或数据异常组。</li><li>同一批次和策略版本重复运行结果一致。</li><li>原始记录、策略版本、人工答案不可静默覆盖。</li><li>每个匹配结果含候选、逐项得分、排除原因、领先分差和策略版本。</li><li>轮询只在后台任务运行时存在，页面隐藏或任务结束后停止。</li></ol>
+</section>
+
+<section class="chapter" id="appendix"><div class="chapter-num">11 · Appendix</div><h1>附录：参数、状态、标签与节点字典</h1>
+  <h2>A. 策略参数基线</h2><table class="compact"><thead><tr><th>参数</th><th>值</th><th>用途</th></tr></thead><tbody><tr><td>idle_gap_minutes</td><td>180</td><td>无强边界时的空闲拆组阈值</td></tr><tr><td>approach_chain_minutes</td><td>30</td><td>入位前接近链窗口</td></tr><tr><td>window_grace_minutes</td><td>5</td><td>旧版离散容差；v2 开启连续衰减后不参与评分</td></tr><tr><td>sequence_resolution_enabled</td><td>true</td><td>运行 #27 开启顺序消歧与连续时间衰减</td></tr><tr><td>candidate_radius_hours</td><td>8</td><td>候选计划搜索半径</td></tr><tr><td>max_plan_hours</td><td>12</td><td>超长计划问题阈值</td></tr><tr><td>hard_reject_plan_hours</td><td>24</td><td>不可用计划硬拒绝阈值</td></tr><tr><td>time_decay_minutes</td><td>180</td><td>时间评分连续衰减范围</td></tr><tr><td>plan_end_overrun_minutes</td><td>20</td><td>实际结束超计划问题阈值</td></tr><tr><td>auto_match_threshold</td><td>70</td><td>自动匹配最低得分</td></tr><tr><td>minimum_margin</td><td>15</td><td>第一候选最低领先分差</td></tr><tr><td>appearance_confidence_threshold</td><td>0.75</td><td>外观证据参与门槛</td></tr><tr><td>acdm_time_tolerance_minutes</td><td>10</td><td>A-CDM 辅助时间一致性检查，不参与评分</td></tr></tbody></table>
+  <h2>B. 结果状态</h2><p>MATCHED 自动匹配；MATCHED_REFERENCE A-CDM 确认；MATCHED_REFERENCE_NO_PLAN A-CDM 确认但计划缺失；MATCHED_MANUAL 人工匹配；NEEDS_REVIEW 待核验；UNASSIGNED 无航班号；DATA_ERROR 数据异常；SUPERSEDED 已被拆分或合并替代。</p>
+  <h2>C. 问题标签全集</h2><p class="small">AMBIGUOUS_MATCH、MISSING_PLAN、LONG_WINDOW、INVALID_YEAR、INVALID_TIME_ORDER、MISSING_PLAN_TIME、MISSING_STAND、MISSING_SAFEGUARD_CODE、CROSS_STAND_CODE、COMBINATION_STAND_CONFLICT、OCCUPANCY_FLIGHT_CONFLICT、OVERLAP、INCOMPLETE_SEQUENCE、REFERENCE_CONFLICT、NODE_DATA_ERROR、MANUAL_SPLIT、MANUAL_MERGE、PLAN_END_OVERRUN、ORPHAN_START_MARKER、ACDM_TIME_OUTLIER、ACDM_PLAN_MISSING、ACDM_FLIGHT_AMBIGUOUS、ACDM_NODE_ORDER_ANOMALY。</p>
+  <h2>D. 已命名节点</h2><table class="compact"><thead><tr><th>阶段</th><th>中文节点</th></tr></thead><tbody><tr><td>航空器边界</td><td>飞机开始入位、引导车开始、引导车结束、飞机入位、开始滑行、飞机推出、牵引车出现、牵引车到位、牵引车就位、牵引车结束</td></tr><tr><td>舱门与桥梯</td><td>开客舱门、关客舱门、开货舱门、关货舱门、靠桥开始、完成靠接、撤廊桥开始、撤廊桥结束、客梯车靠近、客梯车到位、客梯车开始撤离、客梯车离位</td></tr><tr><td>地面保障</td><td>放轮挡开始、放轮挡完成、撤轮挡开始、撤轮挡完成、反光锥放置开始、反光锥放置完成、加油车到位、加油车离位、开始加油、完成加油、配餐车到位、配餐车离位、开始配餐、完成配餐</td></tr><tr><td>行李</td><td>货邮行李车就位、货邮行李车离位、行李装卸开始、行李装卸结束、首件行李到达</td></tr></tbody></table>
+  <h2>E. 代码事实覆盖</h2><table class="compact"><thead><tr><th>代码事实</th><th>文档章节</th><th>证据</th></tr></thead><tbody><tr><td>策略参数与评分</td><td>06、附录 A</td><td><code>engine.DEFAULT_STRATEGY</code></td></tr><tr><td>计划归一化</td><td>03</td><td><code>importers.normalize_flight_plan_rows</code></td></tr><tr><td>节点边界与聚类</td><td>04</td><td><code>engine._cluster_nodes</code></td></tr><tr><td>双维节点阶段</td><td>05</td><td><code>services.node_phase</code></td></tr><tr><td>A-CDM 与外观</td><td>07</td><td><code>run_strategy</code>、<code>registration_similarity</code></td></tr><tr><td>人工闭环与回归</td><td>08</td><td><code>routes.create_review</code>、<code>review_counts</code></td></tr><tr><td>状态、标签、中文名</td><td>附录 B-D</td><td><code>labels.ts</code>、<code>eventLabels.ts</code></td></tr><tr><td>真实运行证据</td><td>01、09</td><td>批次 3、运行 #27</td></tr></tbody></table>
+  <div class="takeaway"><div class="label">版本说明</div>本说明书描述仿真系统当前规则，不等同于公司生产匹配代码。下一阶段收到生产代码和数据后，应逐条建立“仿真规则、生产实现、真实结果”的差异清单。</div>
+</section>
+</body></html>

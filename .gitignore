@@ -1,0 +1,42 @@
+.DS_Store
+.env
+.venv/
+__pycache__/
+*.py[cod]
+*.db
+*.db.backup-*
+*.sqlite
+*.sqlite3
+.pytest_cache/
+.ruff_cache/
+node_modules/
+dist/
+uploads/
+.run/
+
+# 大文件 / 现场原始数据（含生产凭据，禁止入库）
+data/history.tar.gz
+data/nacos配置.zip
+data/raw/**/*.xlsx
+/application-dev.yml
+/easyair-irs-biz-dev.yml
+docs/application-dev.yml
+docs/easyair-irs-biz-dev.yml
+
+# Java 构建产物与嵌套源码仓库（各有独立 git 远程）
+**/target/
+easyair-irs/
+easyair-parent-source/
+easyair-base-data-source/
+easyair-hpps-source/
+easyair-algo-hub-source/
+
+# 其他
+tmp/
+*.log
+*.tsbuildinfo
+
+# IDE / 工具缓存
+.qoder/
+.vscode/
+.idea/

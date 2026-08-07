@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: flight_simulator
+      POSTGRES_USER: flight_simulator
+      POSTGRES_PASSWORD: flight_simulator
+    ports:
+      - "5433:5432"
+    volumes:
+      - flight-sim-postgres:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"
+
+volumes:
+  flight-sim-postgres:
+

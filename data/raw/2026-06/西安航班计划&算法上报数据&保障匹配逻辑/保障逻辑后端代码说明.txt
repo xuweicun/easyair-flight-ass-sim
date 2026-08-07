@@ -1,0 +1,6 @@
+gitlab 地址
+http://git.dev.easyairii.com/easyair-backend/easyair-irs
+分支： master_all
+
+md文档：保障逻辑梳理文档.md
+
